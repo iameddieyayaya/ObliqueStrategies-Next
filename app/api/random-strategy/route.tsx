@@ -22,5 +22,5 @@ export async function GET() {
   const randomStrategyIndex = Math.floor(Math.random() * randomEdition.strategies.length);
   const randomStrategy = randomEdition.strategies[randomStrategyIndex];
 
-  return NextResponse.json({ strategy: randomStrategy });
+  return NextResponse.json({ strategy: randomStrategy }, { status: 200, headers: { 'Cache-Control': 'no-store' } });
 }

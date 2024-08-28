@@ -26,9 +26,9 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: "Image URL not found." }, { status: 404 });
       }
 
-      return NextResponse.json({ imageUrl }, { status: 200 });
+      return NextResponse.json({ imageUrl }, { status: 200, headers: { 'Cache-Control': 'no-store' } });
     }
   } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error." }, { status: 500 });
+    return NextResponse.json({ error: "Internal Server Error." }, { status: 500, headers: { 'Cache-Control': 'no-store' } });
   }
 }

@@ -4,7 +4,7 @@ import { AiOutlineGithub } from 'react-icons/ai'; // Import GitHub icon from rea
 
 const fetchData = async () => {
   try {
-    const response = await fetch('/api/random-photo');
+    const response = await fetch('/api/random-photo', { cache: 'no-store' });
     if (!response.ok) {
       throw new Error('Failed to fetch image');
     }
@@ -22,7 +22,6 @@ const getRandomPastelColor = () => {
   const lightness = 80 + Math.floor(Math.random() * 10); // Lightness between 80% and 90%
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`; // HSL color format
 };
-
 
 const Main = () => {
   const [background, setBackground] = useState<string>("");
@@ -47,26 +46,29 @@ const Main = () => {
     getData();
   }, []);
 
-  useEffect(() => {
-    const fetchRandomStrategy = async () => {
-      try {
-        const response = await fetch('/api/random-strategy');
-        const data = await response.json();
-        setStrategy(data.strategy);
-      } catch (error) {
-        console.error('Error fetching random strategy:', error);
-      }
-    };
+  const fetchRandomStrategy = async () => {
+    try {
+      const response = await fetch('/api/random-strategy', { cache: 'no-store' });
+      const data = await response.json();
+      setStrategy(data.strategy);
+    } catch (error) {
+      console.error('Error fetching random strategy:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchRandomStrategy();
   }, []);
 
+  const handleCardClick = () => {
+    fetchRandomStrategy();
+  };
 
   return (
     <div style={style} className="relative">
       <div className="absolute top-4 right-4">
         <a
-          href="https://github.com/iameddieyayaya/AI-LyricsGenerator"
+          href="https://github.com/iameddieyayaya/ObliqueStrategies-Next"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center text-gray-800 hover:text-gray-600 text-white text-xl"
@@ -76,12 +78,15 @@ const Main = () => {
         </a>
       </div>
 
-      <div className="flex justify-center items-center w-[415px] h-[220px] text-center p-4 m-4 bg-white shadow-lg rounded-lg transform transition-transform duration-500 ease-in-out hover:scale-105 opacity-0 animate-fadeIn">
+      {/* CARD */}
+      <div
+        className="flex justify-center items-center w-[415px] h-[220px] text-center p-4 m-4 bg-white shadow-lg rounded-lg transform transition-transform duration-500 ease-in-out hover:scale-105 opacity-0 animate-fadeIn cursor-pointer"
+        onClick={handleCardClick}
+      >
         <h3 className="text-xl font-semibold text-black">{strategy}</h3>
       </div>
     </div>
   );
-
 };
 
 export default Main;
