@@ -5,7 +5,7 @@ import nodeFetch from 'node-fetch';
 export async function GET(req: NextRequest) {
   const unsplash = createApi({
     accessKey: process.env.UNSPLASH_ACCESS_KEY!,
-    fetch: nodeFetch,
+    fetch: nodeFetch as unknown as typeof fetch,
   });
 
   try {
@@ -14,7 +14,18 @@ export async function GET(req: NextRequest) {
     if (result.errors) {
       return NextResponse.json({ error: "Error fetching image from Unsplash." }, { status: 500 });
     } else {
-      const imageUrl = result.response?.urls.regular;
+      let imageUrl: string | undefined;
+
+      if (Array.isArray(result.response)) {
+        imageUrl = result.response[0]?.urls?.regular;
+      } else {
+        imageUrl = result.response?.urls?.regular;
+      }
+
+      if (!imageUrl) {
+        return NextResponse.json({ error: "Image URL not found." }, { status: 404 });
+      }
+
       return NextResponse.json({ imageUrl }, { status: 200 });
     }
   } catch (error) {
